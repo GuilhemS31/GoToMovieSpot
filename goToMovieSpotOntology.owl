@@ -50,6 +50,27 @@
     
 
 
+    <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLObjectProperty_29cbf90f_8452_4a15_930f_90b6f564ea9a -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLObjectProperty_29cbf90f_8452_4a15_930f_90b6f564ea9a">
+        <owl:inverseOf rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLObjectProperty_2adaded8_37e5_4bbf_a9c0_bfb61f8b39f9"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_b3ec988b_3df8_44bc_bb90_2242c83e3158"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_76723d59_95c9_4d66_92e6_ee20c2d7b7ae"/>
+        <rdfs:label xml:lang="fr">est tourné à</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLObjectProperty_2adaded8_37e5_4bbf_a9c0_bfb61f8b39f9 -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLObjectProperty_2adaded8_37e5_4bbf_a9c0_bfb61f8b39f9">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_76723d59_95c9_4d66_92e6_ee20c2d7b7ae"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_b3ec988b_3df8_44bc_bb90_2242c83e3158"/>
+        <rdfs:label xml:lang="fr">est dans le film</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLObjectProperty_312f7267_275c_4020_bc0d_3d95a3d1c048 -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLObjectProperty_312f7267_275c_4020_bc0d_3d95a3d1c048">
@@ -117,6 +138,16 @@
         <rdfs:domain rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_7d543f0f_5a71_448b_a058_50b72eff1bed"/>
         <rdfs:range rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_1ae1f291_9271_4188_bccd_456fde6439b2"/>
         <rdfs:label xml:lang="fr">a pour genre</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLObjectProperty_8f0f0e4a_d3b4_454d_8f8d_23cdf41b9062 -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLObjectProperty_8f0f0e4a_d3b4_454d_8f8d_23cdf41b9062">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_b3ec988b_3df8_44bc_bb90_2242c83e3158"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_7d521563_4734_4247_8fda_141db630352d"/>
+        <rdfs:label xml:lang="fr">est produit par</rdfs:label>
     </owl:ObjectProperty>
     
 
@@ -191,7 +222,8 @@
     <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f -->
 
     <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f">
-        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_11985763_f834_40e8_8a04_414bbd5bed3d"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
         <rdfs:label xml:lang="fr">a pour longitude</rdfs:label>
     </owl:DatatypeProperty>
     
@@ -200,7 +232,8 @@
     <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed -->
 
     <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed">
-        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_11985763_f834_40e8_8a04_414bbd5bed3d"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
         <rdfs:label xml:lang="fr">a pour latitude</rdfs:label>
     </owl:DatatypeProperty>
     
@@ -209,6 +242,8 @@
     <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLDataProperty_84061d29_b41e_40e0_aa3c_f6f4098180fa -->
 
     <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLDataProperty_84061d29_b41e_40e0_aa3c_f6f4098180fa">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_fa89954a_688a_4eca_b1a5_89a6a06ead17"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
         <rdfs:label xml:lang="fr">appartient à la ligne</rdfs:label>
     </owl:DatatypeProperty>
     
@@ -217,6 +252,7 @@
     <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#aPourDuree -->
 
     <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#aPourDuree">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_b3ec988b_3df8_44bc_bb90_2242c83e3158"/>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
         <rdfs:label xml:lang="fr">a pour durée</rdfs:label>
     </owl:DatatypeProperty>
@@ -330,10 +366,36 @@
     
 
 
+    <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_7d521563_4734_4247_8fda_141db630352d -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_7d521563_4734_4247_8fda_141db630352d">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_7e366e36_d12e_4a24_b612_97b38e8af247"/>
+        <rdfs:label xml:lang="fr">producteur_de_films</rdfs:label>
+    </owl:Class>
+    
+
+
     <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_7d543f0f_5a71_448b_a058_50b72eff1bed -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_7d543f0f_5a71_448b_a058_50b72eff1bed">
         <rdfs:label xml:lang="fr">personne</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_7e366e36_d12e_4a24_b612_97b38e8af247 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_7e366e36_d12e_4a24_b612_97b38e8af247">
+        <rdfs:label xml:lang="fr">entreprise</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_864e038d_b0fc_4708_b47e_03518f04e159 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_864e038d_b0fc_4708_b47e_03518f04e159">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_b3ec988b_3df8_44bc_bb90_2242c83e3158"/>
+        <rdfs:label xml:lang="fr">telefilm</rdfs:label>
     </owl:Class>
     
 
@@ -466,6 +528,15 @@
         </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_b3ec988b_3df8_44bc_bb90_2242c83e3158"/>
         <rdfs:label xml:lang="fr">court-métrage</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_f7a4a251_a16f_49b3_ae49_99b3687fbb48 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_f7a4a251_a16f_49b3_ae49_99b3687fbb48">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#OWLClass_b3ec988b_3df8_44bc_bb90_2242c83e3158"/>
+        <rdfs:label xml:lang="fr">série-télévisée</rdfs:label>
     </owl:Class>
     
 

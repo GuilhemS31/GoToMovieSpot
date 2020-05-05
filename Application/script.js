@@ -13,14 +13,14 @@ window.onload = function initMap(){
 
 function searchFilm(){
   console.log("searchFilm");
-  //document.getElementById("erreurFilm").hidden = false;
-
+  document.getElementById("erreurFilm").hidden = true; // if error set false
+  //TODO : SPARQL QUERY
 }
 
 
 function searchLigne(){
   console.log("searchLigne");
-  //document.getElementById("numLigne").value 
-  //document.getElementById("erreurLigne").hidden = false;
-
+  document.getElementById("erreurLigne").hidden = true; // if error set false
+  //document.getElementById("numLigne").value
+  //TODO : SPARQL QUERY
 }
