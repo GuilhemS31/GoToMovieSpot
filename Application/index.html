@@ -1,0 +1,49 @@
+<html>
+<head>
+  <title>GoToMovieSpot</title>
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+	<script type="text/javascript" src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script type="text/javascript" src="script.js"></script>
+
+</head>
+<body>
+<header><b>GoToMovieSpot</b></header>
+  <h1>Lieux de tournage à Paris</h1>
+
+	<div id="map" onload="initMap()"></div>
+
+  <div id="filtres">
+
+    <form id="filtreFilm" onsubmit="searchFilm();return false">
+      <p id="erreurFilm" hidden="true">Aucuns films trouvés</p>
+
+      <label for="labelFilm">Filtrer par Film</label><br>
+      <input type="text" id="nomFilm" name="nomFilm" placeholder="Nom du Film"><br>
+      <select id="selectFilm" hidden="true"></select>
+      <input type="submit" value="Filtrer !">
+    </form>
+
+    <p>
+      ou
+    </p>
+
+    <form id="filtreLigne" onsubmit="searchLigne();return false">
+      <p id="erreurLigne" hidden="true">Numéro de Ligne inconnu</p>
+
+      <label for="labelLigne">Filtrer par Ligne</label><br>
+      <input type="number" id="numLigne" name="numLigne"><br>
+      <input type="submit" value="Filtrer !">
+    </form>
+
+  </div>
+
+
+<footer>
+By Titouan Bouëte-Giraud et Guilhem Susa <br>
+Master 2 ICE, Université Toulouse 2 Jean-Jaurès
+</footer>
+</body>
+</html>
