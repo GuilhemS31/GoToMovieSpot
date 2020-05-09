@@ -17,13 +17,19 @@
 
   <div id="filtres">
 
-    <form id="filtreFilm" onsubmit="searchFilm();return false">
-      <p id="erreurFilm" hidden="true">Aucuns films trouvés</p>
+      <form id="filtreFilm" onsubmit="displayFilm();return false">
 
-      <label for="labelFilm">Filtrer par Film</label><br>
-      <input type="text" id="nomFilm" name="nomFilm" placeholder="Nom du Film"><br>
-      <select id="selectFilm" hidden="true"></select>
-      <input type="submit" value="Filtrer !">
+        <label for="labelFilm">Filtrer par Film</label><br>
+        <input type="text" id="nomFilm" name="nomFilm" placeholder="Nom du Film"><br>
+        <input type="button" value="Filtrer !" onclick="searchFilm()">
+
+        <br />
+        <select id="selectFilm" hidden="true"></select>
+
+        <br />
+        <input type="submit" id="submitFilm" hidden="true" value="Afficher les lieux de tournage">
+        <p id="noFilmFound" hidden="true">Aucuns films trouvés</p>
+
     </form>
 
     <p>
@@ -33,7 +39,7 @@
     <form id="filtreLigne" onsubmit="searchLigne();return false">
       <p id="erreurLigne" hidden="true">Numéro de Ligne inconnu</p>
 
-      <label for="labelLigne">Filtrer par Ligne</label><br>
+      <label for="labelLigne">Filtrer par Ligne de bus</label><br>
       <input type="number" id="numLigne" name="numLigne"><br>
       <input type="submit" value="Filtrer !">
     </form>

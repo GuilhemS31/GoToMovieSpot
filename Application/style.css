@@ -1,14 +1,27 @@
 #map{ width: 70%; height: 60%; }
 
 header{
-text-align: center;
-font-size: 20px;
+  text-align: center;
+  font-size: 20px;
 }
 
 h1 {
-text-align: left;
+  text-align: left;
 }
 
 div{
-display: inline-block;
+  display: inline-block;
+  margin : 10px;
+}
+
+#filtreFilm{
+  border: 1px solid;
+  border-color: black;
+  padding: 10px;
+}
+
+#filtreLigne{
+  border: 1px solid;
+  border-color: blue;
+  padding: 10px;
 }

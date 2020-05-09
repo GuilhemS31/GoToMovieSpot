@@ -11,10 +11,37 @@ window.onload = function initMap(){
 }
 
 
+//https://www.w3.org/community/rdfjs/wiki/Comparison_of_RDFJS_libraries#SPARQL.2FQuery_libraries
+
 function searchFilm(){
   console.log("searchFilm");
-  document.getElementById("erreurFilm").hidden = true; // if error set false
+  document.getElementById("noFilmFound").hidden = true;
   //TODO : SPARQL QUERY
+  var queryResult = [];
+
+  if(document.getElementById("nomFilm").value != ""){
+    queryResult.push(document.getElementById("nomFilm").value);
+  }
+
+  if (queryResult.length == 0) {
+    document.getElementById("noFilmFound").hidden = false;
+  }
+  else {
+    var selectFilm = document.getElementById("selectFilm");
+    selectFilm.hidden = false;
+    selectFilm.innerHTML = "";
+
+    queryResult.forEach(function(y){
+      console.log(y);
+      var newOption = document.createElement("option");
+      newOption.value = y;
+      newOption.innerHTML = y;
+      selectFilm.options.add(newOption);
+    });
+
+
+    document.getElementById("submitFilm").hidden = false;
+  }
 }
 
 
@@ -23,4 +50,10 @@ function searchLigne(){
   document.getElementById("erreurLigne").hidden = true; // if error set false
   //document.getElementById("numLigne").value
   //TODO : SPARQL QUERY
+}
+
+
+//https://stackoverflow.com/questions/31292796/dynamically-fill-select-field-in-html-and-javascript
+function displayFilm(){
+    console.log("displayFilm");
 }
