@@ -23,7 +23,7 @@ public class GoToMovieSpotDataImport {
             System.out.println("server is UP");
             
             //Fill Lieux de tournage & Film
-            insertFilmFromCSV(sparqlClient);
+            //insertFilmFromCSV(sparqlClient);
             
             //Fill Arret de Bus
             insertArretDeBusFromCSV(sparqlClient);
@@ -142,38 +142,34 @@ public class GoToMovieSpotDataImport {
             //For each line of the CSV
             while ((line = br.readLine()) != null) {
             	//Make a List of attributes
-                String[] values = line.split(",");
+                String[] values = line.split(";");
                 //0:idptar;1:X;2:Y;3:Annonce Sonore Prochain Passage;4:Annonce Visuelle Prochain Passage;5:Annonce Sonore Situations Perturbees;
-                //6:Annonce Visuelle Situations Perturbees;78:coord;9:IDAMIVIF;10:nomptar;11:CODEINSEE;12:Accessibilité UFR;13:PAQT;14:IDFM;15:Sens;
-                //16:Doublon;17:Ligne;18:GIPA
+                //6:Annonce Visuelle Situations Perturbees;7:coord;8:IDAMIVIF;9:nomptar;10:CODEINSEE;11:Accessibilité UFR;12:PAQT;13:IDFM;14:Sens;
+                //15:Doublon;16:Ligne;17:GIPA
                 List<String> cellValues = Arrays.asList(values);
                 //replace all special characters for correct entities name (their ID)
-            	String nomArretWithoutSpaces = cellValues.get(10).replaceAll(stringRegex, "_");
+            	String nomArretWithoutSpaces = cellValues.get(9).replaceAll(stringRegex, "_");
 
             	//Spliting coord as latitude / longitude
+            	String[] coords = cellValues.get(7).replace("\"", "").split(",");
             	float latitude = (float) 0.0;
             	float longitude = (float) 0.0;
             	try {
-                	latitude = Float.valueOf(cellValues.get(7).replace("\"", ""));
-                	longitude = Float.valueOf(cellValues.get(7).replace("\"", ""));
+                	latitude = Float.valueOf(coords[0]);
+                	longitude = Float.valueOf(coords[1]);
             	}catch (Exception e) {
 					// If xy isn't set, let latitude and longitude null
 				}
             	
-            	/* TODO tester si arret existe deja
-            	INSERT { :Ferrari owl:sameAs "http://dbpedia.org/page/"?label }
-            	WHERE {
-            	 :Ferrari rdfs:label ?label.
-            	}
-            	*/
             	query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
         		"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
             	"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
         		"PREFIX goToMovieSpot: <http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#> " +
         		"INSERT DATA { " +
         		"goToMovieSpot:" + nomArretWithoutSpaces + " rdf:type goToMovieSpot:OWLClass_fa89954a_688a_4eca_b1a5_89a6a06ead17. " +
-        		"goToMovieSpot:"+ nomArretWithoutSpaces + " rdfs:label \"" + cellValues.get(10) +"\". " +
-        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:\"appartient à la ligne\" \"" + Integer.valueOf(cellValues.get(17)) +"\". " +
+        		"goToMovieSpot:"+ nomArretWithoutSpaces + " rdfs:label \"" + cellValues.get(9) +"\". " +
+        		//property : appartient à la ligne
+        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_84061d29_b41e_40e0_aa3c_f6f4098180fa \"" + Integer.valueOf(cellValues.get(16)) +"\"^^xsd:decimal. " +
         		//property : a pour latitude
         		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed \"" + latitude +"\"^^xsd:decimal. " + 
         		//property : a pour longitude
@@ -181,7 +177,18 @@ public class GoToMovieSpotDataImport {
         		"}";
 
                 System.out.println("Arret de Bus : " + query);
-                sparqlClient.update(query);
+                try {
+                    sparqlClient.update(query);
+                }catch (Exception e) {
+
+                	/* TODO tester si arret existe deja
+                	INSERT { :Ferrari owl:sameAs "http://dbpedia.org/page/"?label }
+                	WHERE {
+                	 :Ferrari rdfs:label ?label.
+                	}
+                	*/
+                	System.out.println("err");
+				}
                 
             }
         } catch (IOException e) {
