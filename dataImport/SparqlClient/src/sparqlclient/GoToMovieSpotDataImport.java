@@ -3,12 +3,13 @@ package sparqlclient;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
 public class GoToMovieSpotDataImport {
 
+	
+	private static String stringRegex = "[ $&+:;=?@#|'<>.^*()%!-/]";
     /**
      * @param args the command line arguments
      */
@@ -25,7 +26,7 @@ public class GoToMovieSpotDataImport {
             insertFilmFromCSV(sparqlClient);
             
             //Fill Arret de Bus
-            //insertArretDeBusFromCSV(sparqlClient);
+            insertArretDeBusFromCSV(sparqlClient);
             
             //TODO calculer "est près de"
             
@@ -53,8 +54,8 @@ public class GoToMovieSpotDataImport {
                 //0:titre,1:realisateur,2:adresse,3:organisme_demandeur,4:type_de_tournage,5:ardt,6:date_debut,7:date_fin,89:xy
                 List<String> cellValues = Arrays.asList(values);
                 //replace all special characters for correct entities name (their ID)
-            	String titleWithoutSpaces = cellValues.get(0).replaceAll("[ $&+:;=?@#|'<>.^*()%!-]", "_");
-            	String adressWithoutSpaces = cellValues.get(2).replaceAll("[ $&+:;=?@#|'<>.^*()%!-]", "_");
+            	String titleWithoutSpaces = cellValues.get(0).replaceAll(stringRegex, "_");
+            	String adressWithoutSpaces = cellValues.get(2).replaceAll(stringRegex, "_");
             	
             	//___________ First add Lieux de Tournage ___________
             	
@@ -75,8 +76,10 @@ public class GoToMovieSpotDataImport {
         		"INSERT DATA { " +
         		"goToMovieSpot:" + adressWithoutSpaces + " rdf:type goToMovieSpot:OWLClass_76723d59_95c9_4d66_92e6_ee20c2d7b7ae. " +
         		"goToMovieSpot:"+ adressWithoutSpaces + " rdfs:label \"" + cellValues.get(2) +"\". " +
-        		"goToMovieSpot:"+ adressWithoutSpaces + " goToMovieSpot:\"a pour latitude\" " + latitude +". " +
-        		"goToMovieSpot:"+ adressWithoutSpaces + " goToMovieSpot:\"a pour longitude\" " + longitude +
+        		//property : a pour latitude
+        		"goToMovieSpot:"+ adressWithoutSpaces + " goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed \"" + latitude +"\"^^xsd:decimal. " + 
+        		//property : a pour longitude
+        		"goToMovieSpot:"+ adressWithoutSpaces + " goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f \"" + longitude + "\"^^xsd:decimal " + 
         		"}";
 
                 System.out.println("Lieux de Tournage : " + query);
@@ -109,9 +112,12 @@ public class GoToMovieSpotDataImport {
         		"INSERT DATA { " +
         		"goToMovieSpot:" + titleWithoutSpaces + " rdf:type goToMovieSpot:" + OWLclassName + ". " +
         		"goToMovieSpot:"+ titleWithoutSpaces + " rdfs:label \"" + cellValues.get(0) +"\". " +
-        		"goToMovieSpot:"+ titleWithoutSpaces + " goToMovieSpot:\"a pour réalisateur\" \"" + cellValues.get(1) +"\". " +
-        		"goToMovieSpot:"+ titleWithoutSpaces + " goToMovieSpot:\"est tourné à\" goToMovieSpot:" + adressWithoutSpaces +". " +
-        		"goToMovieSpot:"+ titleWithoutSpaces + " goToMovieSpot:\"est produit par\" \"" + cellValues.get(3) +"\"" +
+        		//property : a pour réalisateur
+        		"goToMovieSpot:"+ titleWithoutSpaces + " goToMovieSpot:OWLObjectProperty_7714a382_8fbc_485a_b6b7_5ef0cc32fd41 \"" + cellValues.get(1) +"\". " +
+        		//property : est tourné à
+        		"goToMovieSpot:"+ titleWithoutSpaces + " goToMovieSpot:OWLObjectProperty_29cbf90f_8452_4a15_930f_90b6f564ea9a goToMovieSpot:" + adressWithoutSpaces +". " +
+        		//property : est produit par
+        		"goToMovieSpot:"+ titleWithoutSpaces + " goToMovieSpot:OWLObjectProperty_8f0f0e4a_d3b4_454d_8f8d_23cdf41b9062 \"" + cellValues.get(3) +"\"" +
         		"}";
 
                 System.out.println("Film : " + query);
@@ -142,7 +148,7 @@ public class GoToMovieSpotDataImport {
                 //16:Doublon;17:Ligne;18:GIPA
                 List<String> cellValues = Arrays.asList(values);
                 //replace all special characters for correct entities name (their ID)
-            	String nomArretWithoutSpaces = cellValues.get(10).replaceAll("[ $&+:;=?@#|'<>.^*()%!-]", "_");
+            	String nomArretWithoutSpaces = cellValues.get(10).replaceAll(stringRegex, "_");
 
             	//Spliting coord as latitude / longitude
             	float latitude = (float) 0.0;
@@ -154,7 +160,7 @@ public class GoToMovieSpotDataImport {
 					// If xy isn't set, let latitude and longitude null
 				}
             	
-            	/* tester si arret existe deja
+            	/* TODO tester si arret existe deja
             	INSERT { :Ferrari owl:sameAs "http://dbpedia.org/page/"?label }
             	WHERE {
             	 :Ferrari rdfs:label ?label.
@@ -168,8 +174,10 @@ public class GoToMovieSpotDataImport {
         		"goToMovieSpot:" + nomArretWithoutSpaces + " rdf:type goToMovieSpot:OWLClass_fa89954a_688a_4eca_b1a5_89a6a06ead17. " +
         		"goToMovieSpot:"+ nomArretWithoutSpaces + " rdfs:label \"" + cellValues.get(10) +"\". " +
         		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:\"appartient à la ligne\" \"" + Integer.valueOf(cellValues.get(17)) +"\". " +
-        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:\"a pour latitude\" " + latitude +"^^xsd:decimal. " +
-        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:\"a pour longitude\" " + longitude +"^^xsd:decimal " +
+        		//property : a pour latitude
+        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed \"" + latitude +"\"^^xsd:decimal. " + 
+        		//property : a pour longitude
+        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f \"" + longitude + "\"^^xsd:decimal " + 
         		"}";
 
                 System.out.println("Arret de Bus : " + query);
