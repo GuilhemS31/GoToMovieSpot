@@ -161,6 +161,12 @@ public class GoToMovieSpotDataImport {
 					// If xy isn't set, let latitude and longitude null
 				}
             	
+            	Integer numLigne = 0;
+            	
+            	if(!cellValues.get(16).equals("")) {
+            		numLigne = Integer.valueOf(cellValues.get(16)); 
+            	}
+            	
             	query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
         		"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
             	"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
@@ -169,7 +175,7 @@ public class GoToMovieSpotDataImport {
         		"goToMovieSpot:" + nomArretWithoutSpaces + " rdf:type goToMovieSpot:OWLClass_fa89954a_688a_4eca_b1a5_89a6a06ead17. " +
         		"goToMovieSpot:"+ nomArretWithoutSpaces + " rdfs:label \"" + cellValues.get(9) +"\". " +
         		//property : appartient à la ligne
-        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_84061d29_b41e_40e0_aa3c_f6f4098180fa \"" + Integer.valueOf(cellValues.get(16)) +"\"^^xsd:decimal. " +
+        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_84061d29_b41e_40e0_aa3c_f6f4098180fa \"" + numLigne +"\"^^xsd:decimal. " +
         		//property : a pour latitude
         		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed \"" + latitude +"\"^^xsd:decimal. " + 
         		//property : a pour longitude
@@ -177,18 +183,7 @@ public class GoToMovieSpotDataImport {
         		"}";
 
                 System.out.println("Arret de Bus : " + query);
-                try {
-                    sparqlClient.update(query);
-                }catch (Exception e) {
-
-                	/* TODO tester si arret existe deja
-                	INSERT { :Ferrari owl:sameAs "http://dbpedia.org/page/"?label }
-                	WHERE {
-                	 :Ferrari rdfs:label ?label.
-                	}
-                	*/
-                	System.out.println("err");
-				}
+                sparqlClient.update(query);
                 
             }
         } catch (IOException e) {
