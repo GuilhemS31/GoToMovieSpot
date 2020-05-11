@@ -9,7 +9,7 @@ import java.util.List;
 public class GoToMovieSpotDataImport {
 
 	
-	private static String stringRegex = "[ $&+:;=?@#|'<>.^*()%!-/]";
+	private final static String STR_REGEX = "[ $&+:;=?@#|'<>.^*()%!-/]";
     /**
      * @param args the command line arguments
      */
@@ -54,8 +54,8 @@ public class GoToMovieSpotDataImport {
                 //0:titre,1:realisateur,2:adresse,3:organisme_demandeur,4:type_de_tournage,5:ardt,6:date_debut,7:date_fin,89:xy
                 List<String> cellValues = Arrays.asList(values);
                 //replace all special characters for correct entities name (their ID)
-            	String titleWithoutSpaces = cellValues.get(0).replaceAll(stringRegex, "_");
-            	String adressWithoutSpaces = cellValues.get(2).replaceAll(stringRegex, "_");
+            	String titleWithoutSpaces = cellValues.get(0).replaceAll(STR_REGEX, "_");
+            	String adressWithoutSpaces = cellValues.get(2).replaceAll(STR_REGEX, "_");
             	
             	//___________ First add Lieux de Tournage ___________
             	
@@ -148,7 +148,7 @@ public class GoToMovieSpotDataImport {
                 //15:Doublon;16:Ligne;17:GIPA
                 List<String> cellValues = Arrays.asList(values);
                 //replace all special characters for correct entities name (their ID)
-            	String nomArretWithoutSpaces = cellValues.get(9).replaceAll(stringRegex, "_");
+            	String nomArretWithoutSpaces = cellValues.get(9).replaceAll(STR_REGEX, "_");
 
             	//Spliting coord as latitude / longitude
             	String[] coords = cellValues.get(7).replace("\"", "").split(",");
