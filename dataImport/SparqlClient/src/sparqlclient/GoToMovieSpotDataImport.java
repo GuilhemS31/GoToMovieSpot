@@ -3,16 +3,20 @@ package sparqlclient;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class GoToMovieSpotDataImport {
 
 	
 	private final static String STR_REGEX = "[ $&+:;=?@#|'<>.^*()%!-/]";
-    /**
-     * @param args the command line arguments
-     */
+	private final static double DISTANCE_PROCHE = 0.5;
+	
+
     public static void main(String args[]) {
     	//TODO CREATE DATASET goToMovieSpot !!!
         SparqlClient sparqlClient = new SparqlClient("localhost:3030/goToMovieSpot");
@@ -23,12 +27,10 @@ public class GoToMovieSpotDataImport {
             System.out.println("server is UP");
             
             //Fill Lieux de tournage & Film
-            //insertFilmFromCSV(sparqlClient);
+            insertFilmFromCSV(sparqlClient);
             
             //Fill Arret de Bus
             insertArretDeBusFromCSV(sparqlClient);
-            
-            //TODO calculer "est près de"
             
 
             System.out.println(sparqlClient.getEndpointUri());
@@ -139,6 +141,8 @@ public class GoToMovieSpotDataImport {
             //skip 1st line (headers)
             String headerLine = br.readLine();
             		
+            Map<String, float[]> mapLieuDeTournage = getLieuxDeTournage(sparqlClient);
+            
             //For each line of the CSV
             while ((line = br.readLine()) != null) {
             	//Make a List of attributes
@@ -167,6 +171,9 @@ public class GoToMovieSpotDataImport {
             		numLigne = Integer.valueOf(cellValues.get(16)); 
             	}
             	
+            	List<String> listLieuxDeTournageProches = getLieuxDeTournageProchesDeArretDeBus(latitude, longitude, mapLieuDeTournage);
+            	
+            	
             	query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
         		"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
             	"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
@@ -179,8 +186,13 @@ public class GoToMovieSpotDataImport {
         		//property : a pour latitude
         		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed \"" + latitude +"\"^^xsd:decimal. " + 
         		//property : a pour longitude
-        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f \"" + longitude + "\"^^xsd:decimal " + 
-        		"}";
+        		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f \"" + longitude + "\"^^xsd:decimal ";
+            	
+            	for(String lieuDeTournageProche : listLieuxDeTournageProches) {
+            		query += ". goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLObjectProperty_a25f1bc5_9d9b_4ae8_b942_ba60db407a84 \"" + lieuDeTournageProche;
+            	}
+            	
+            	query += "}";
 
                 System.out.println("Arret de Bus : " + query);
                 sparqlClient.update(query);
@@ -190,4 +202,101 @@ public class GoToMovieSpotDataImport {
 			e.printStackTrace();
 		}
 	}
+    
+    public static Map<String, float[]> getLieuxDeTournage(SparqlClient sparqlClient) {
+    	Map<String, float[]> mapLieuxDeTournage = new HashMap<String, float[]>();
+    	
+    	
+    	String query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
+        		"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+            	"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
+        		"PREFIX goToMovieSpot: <http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#> " +
+            	"SELECT *"
+            	+ "WHERE {"
+            	+ "?lieu rdf:type goToMovieSpot:OWLClass_76723d59_95c9_4d66_92e6_ee20c2d7b7ae;"
+            	+ "goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed ?latitude;"
+              	+ "goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f ?longitude;"
+            	+ "}"
+            	;
+    	
+    	try {
+    		// Parse result result of the query and add them to the Map mapLieuxDeTournage.
+            Iterable<Map<String, String>> result = sparqlClient.select(query);
+            Iterator<Map<String, String>> iterator = result.iterator();
+            
+            while(iterator.hasNext()) {
+            	Map<String, String> mapLieuDeTournage = iterator.next();
+            	// 3 entries : 1st is latitude, 2nd is lieu, 3rd is longitude
+            	
+            	float latitude = (float) 0.0;
+            	float longitude = (float) 0.0;
+            	try {
+                	latitude = Float.valueOf(mapLieuDeTournage.get("latitude"));
+                	longitude = Float.valueOf(mapLieuDeTournage.get("longitude"));
+            	}catch (Exception e) {
+					// If xy isn't set, let latitude and longitude null
+				}
+            	
+            	String lieu = mapLieuDeTournage.get("lieu");
+            	float[] coordonates = {latitude, longitude};
+            	mapLieuxDeTournage.put(lieu, coordonates);
+            	
+            }
+            
+            System.out.println("getLieuxDeTournage() ok");
+        }catch (Exception e) {
+        	System.out.println("err");
+		}
+    	
+    	return mapLieuxDeTournage;
+    }
+    
+    public static List<String> getLieuxDeTournageProchesDeArretDeBus(float latArret, float longArret, Map<String, float[]> mapLieuxDeTournage) {
+    	/* Compare l'arret de bus à tous les lieux de tournage.
+    	 * Pour chaque lieu de tournage, on vérifie ceux pour
+    	 * lesquelles la distance est inférieure à la constante DISTANCE_PROCHE
+    	 */
+    	List<String> listLieuxDeTournageProches = new ArrayList<String>();
+    	
+    	for (Map.Entry<String, float[]> entry : mapLieuxDeTournage.entrySet()) {
+    		double latLieuDeTournage = entry.getValue()[0];
+    		double longLieuDeTournage = entry.getValue()[1];
+    		if(distance(latArret, longArret, latLieuDeTournage, longLieuDeTournage, 'K') < DISTANCE_PROCHE) {
+    			listLieuxDeTournageProches.add(entry.getKey());
+    		}
+    	}
+    	
+    	return listLieuxDeTournageProches;
+    }
+    
+    /*
+     * source : https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude
+     */
+    private static double distance(double lat1, double lon1, double lat2, double lon2, char unit) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        if (unit == 'K') {
+          dist = dist * 1.609344;
+        } else if (unit == 'N') {
+          dist = dist * 0.8684;
+          }
+        return (dist);
+      }
+
+      /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+      /*::  This function converts decimal degrees to radians             :*/
+      /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+      private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+      }
+
+      /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+      /*::  This function converts radians to decimal degrees             :*/
+      /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+      private static double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+      }
 }
