@@ -4,7 +4,7 @@
 
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
 	<script type="text/javascript" src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<script type="text/javascript" src="script.js"></script>
 
@@ -37,11 +37,11 @@
     </p>
 
     <form id="filtreLigne" onsubmit="searchLigne();return false">
-      <p id="erreurLigne" hidden="true">Numéro de Ligne inconnu</p>
 
       <label for="labelLigne">Filtrer par Ligne de bus</label><br>
       <input type="number" id="numLigne" name="numLigne"><br>
-      <input type="submit" value="Filtrer !">
+      <input type="submit" value="Afficher les lieux de tournage sur cette ligne !">
+      <p id="erreurLigne" hidden="true">Pas de lieux pour cette ligne :s</p>
     </form>
 
   </div>
