@@ -238,7 +238,7 @@ public class GoToMovieSpotDataImport {
 					// If xy isn't set, let latitude and longitude null
 				}
             	
-            	String label = mapLieuDeTournage.get("label");
+            	String label = mapLieuDeTournage.get("label").replaceAll(STR_REGEX, "_");;
             	float[] coordonates = {latitude, longitude};
             	mapLieuxDeTournage.put(label, coordonates);
             	
