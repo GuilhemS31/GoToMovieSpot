@@ -189,7 +189,7 @@ public class GoToMovieSpotDataImport {
         		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f \"" + longitude + "\"^^xsd:decimal ";
             	
             	for(String lieuDeTournageProche : listLieuxDeTournageProches) {
-            		query += ". goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot: " + lieuDeTournageProche;
+            		query += ". goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLObjectProperty_a25f1bc5_9d9b_4ae8_b942_ba60db407a84 goToMovieSpot:" + lieuDeTournageProche;
             	}
             	
             	query += "}";
