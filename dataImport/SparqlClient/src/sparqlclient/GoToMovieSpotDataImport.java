@@ -189,7 +189,7 @@ public class GoToMovieSpotDataImport {
         		"goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f \"" + longitude + "\"^^xsd:decimal ";
             	
             	for(String lieuDeTournageProche : listLieuxDeTournageProches) {
-            		query += ". goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot:OWLObjectProperty_a25f1bc5_9d9b_4ae8_b942_ba60db407a84 \"" + lieuDeTournageProche;
+            		query += ". goToMovieSpot:"+ nomArretWithoutSpaces + " goToMovieSpot: " + lieuDeTournageProche;
             	}
             	
             	query += "}";
@@ -216,6 +216,7 @@ public class GoToMovieSpotDataImport {
             	+ "?lieu rdf:type goToMovieSpot:OWLClass_76723d59_95c9_4d66_92e6_ee20c2d7b7ae;"
             	+ "goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed ?latitude;"
               	+ "goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f ?longitude;"
+            	+ "rdfs:label ?label"
             	+ "}"
             	;
     	
@@ -237,9 +238,9 @@ public class GoToMovieSpotDataImport {
 					// If xy isn't set, let latitude and longitude null
 				}
             	
-            	String lieu = mapLieuDeTournage.get("lieu");
+            	String label = mapLieuDeTournage.get("label");
             	float[] coordonates = {latitude, longitude};
-            	mapLieuxDeTournage.put(lieu, coordonates);
+            	mapLieuxDeTournage.put(label, coordonates);
             	
             }
             
