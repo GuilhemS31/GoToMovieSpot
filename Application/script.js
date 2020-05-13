@@ -33,7 +33,6 @@ window.onload = function initMap(){
 //https://www.w3.org/community/rdfjs/wiki/Comparison_of_RDFJS_libraries#SPARQL.2FQuery_libraries
 
 function searchFilm(){
-  console.log("searchFilm");
   document.getElementById("noFilmFound").hidden = true;
   document.getElementById("selectFilm").hidden = true;
   document.getElementById("submitFilm").hidden = true;
@@ -88,7 +87,6 @@ function searchFilm(){
 
 
 function searchLigne(){
-  console.log("searchLigne");
   document.getElementById("erreurLigne").hidden = true;
   //document.getElementById("numLigne").value
 
@@ -111,7 +109,7 @@ function searchLigne(){
             if(data.results.bindings.length != 0){
               data.results.bindings.forEach(function(s){
                 markerGroup.clearLayers();
-                creerPointArret(s.arret.value.split('#')[1],s.nomArret.value);
+                creerPointArret(s.arret.value.split('#')[1],s.nomArret.value,document.getElementById("numLigne").value);
                 creerPointLieuxProches(s.arret.value.split('#')[1]);
               });
             }
@@ -124,16 +122,41 @@ function searchLigne(){
 }
 
 
-function displayFilm(){
-    console.log("displayFilm");
-    //TODO chercher lieux de ce films
-    // créer un point
+function displayPointsFilm(){
+    var selectedFilm = document.getElementById("selectFilm").options[document.getElementById("selectFilm").selectedIndex].value;
 
+    const query = "PREFIX goToMovieSpot: <http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#> "+
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "+
+        "SELECT distinct * "+
+        "WHERE { "+
+        "?film a ?type; "+
+        "rdfs:label \""+selectedFilm+"\"."+
+        "?film goToMovieSpot:OWLObjectProperty_29cbf90f_8452_4a15_930f_90b6f564ea9a ?lieu " +
+        "filter (?type IN (goToMovieSpot:OWLClass_b3ec988b_3df8_44bc_bb90_2242c83e3158, "+
+            "goToMovieSpot:OWLClass_dea269dd_41df_4b73_ba4f_fa9e99620933, "+
+            "goToMovieSpot:OWLClass_f7a4a251_a16f_49b3_ae49_99b3687fbb48, "+
+            "goToMovieSpot:OWLClass_864e038d_b0fc_4708_b47e_03518f04e159)). "+
+        "?arret goToMovieSpot:OWLObjectProperty_a25f1bc5_9d9b_4ae8_b942_ba60db407a84 ?lieu. "+
+        "}";
+
+      $.ajax({
+        //envoi de la requête
+        method: "GET",
+        url: "http://localhost:3030/goToMovieSpot/sparql?query="+encodeURIComponent(query)+"&format=json",
+        dataType : "json",
+        success:function(data) {
+            data.results.bindings.forEach(function(s){
+              markerGroup.clearLayers();
+              creerPointArret(s.arret.value.split('#')[1]);
+              creerLieuxFilm(selectedFilm,s.lieu.value.split('#')[1]);
+            });
+          }
+      })
 }
 
 
-function creerPointArret(idArret, nomArret){
-    console.log("creerPointArret : "+idArret);
+function creerPointArret(idArret, nomArret,numLigne){
     const query = "PREFIX goToMovieSpot: <http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#> "+
       "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+
       "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "+
@@ -141,40 +164,76 @@ function creerPointArret(idArret, nomArret){
       "WHERE { "+
       "goToMovieSpot:"+idArret +" goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed ?latArret. " + //latitude de l'arret
       "goToMovieSpot:"+idArret +" goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f ?longArret " + //longitude de l'arret
-      "}";
+  "}";
 
+  var latPoint = 0;
+  var longPoint = 0;
         $.ajax({
           //envoi de la requête
           method: "GET",
           url: "http://localhost:3030/goToMovieSpot/sparql?query="+encodeURIComponent(query)+"&format=json",
           dataType : "json",
           success:function(data) {
-              var latPoint = 0;
-              var longPoint = 0;
               if(data.results.bindings.length !=0){
                  latPoint = data.results.bindings[0].latArret.value;
                  longPoint = data.results.bindings[0].longArret.value;
               }
-              var marker = L.marker([latPoint, longPoint], {icon: arretIcon}).addTo(markerGroup);
-              marker.bindPopup("<b>"+nomArret+"</b>");
             }
         })
+
+
+      const query2 = "PREFIX goToMovieSpot: <http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#> "+
+          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+
+          "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "+
+          "SELECT distinct * "+
+          "WHERE { "+
+          "goToMovieSpot:"+idArret +" rdfs:label ?nomArret. "+
+          "goToMovieSpot:"+idArret +" goToMovieSpot:OWLDataProperty_84061d29_b41e_40e0_aa3c_f6f4098180fa ?numLigne "+
+      "}";
+
+      var nomArret = idArret;
+      var listeLignes = [];
+
+      $.ajax({
+        //envoi de la requête
+        method: "GET",
+        url: "http://localhost:3030/goToMovieSpot/sparql?query="+encodeURIComponent(query2)+"&format=json",
+        dataType : "json",
+        success:function(data) {
+              data.results.bindings.forEach(function(s){
+                   nomArret = s.nomArret.value;
+                   listeLignes.push(s.numLigne.value);
+              });
+
+
+              var nomLignes = "";
+
+              listeLignes.forEach(function(currentLigne){
+                  nomLignes += currentLigne + ",";
+              });
+              nomLignes = nomLignes.substring(0, nomLignes.length - 1);
+
+              var marker = L.marker([latPoint, longPoint], {icon: arretIcon}).addTo(markerGroup);
+              marker.bindPopup("<b>"+nomArret+"</b><br>Ligne "+ nomLignes);
+          }
+      })
+
 }
 
-function creerPointLieuxProches(idArret){
-  console.log("creerPointLieuxProches : "+idArret);
+function creerPointLieuxProches(idPoint){
   const query = "PREFIX goToMovieSpot: <http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#> "+
     "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+
     "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "+
     "SELECT distinct * "+
-    "WHERE { "+
-    "goToMovieSpot:"+idArret +" goToMovieSpot:OWLObjectProperty_a25f1bc5_9d9b_4ae8_b942_ba60db407a84 ?lieux. " +
+    "WHERE { " +
+    "goToMovieSpot:"+idPoint +" goToMovieSpot:OWLObjectProperty_a25f1bc5_9d9b_4ae8_b942_ba60db407a84 ?lieux. " +
     "?lieux rdfs:label ?adrLieux. "+
     "?film goToMovieSpot:OWLObjectProperty_29cbf90f_8452_4a15_930f_90b6f564ea9a ?lieux. " +
     "?film rdfs:label ?nomFilm. "+
     "?lieux goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed ?latLieux. "+
     "?lieux goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f ?longLieux "+
     "}";
+
 
       $.ajax({
         //envoi de la requête
@@ -188,4 +247,58 @@ function creerPointLieuxProches(idArret){
             });
           }
       })
+}
+
+
+function creerLieuxFilm(selectedFilm,idLieux){
+  const query = "PREFIX goToMovieSpot: <http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#> "+
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+
+    "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "+
+    "SELECT distinct * "+
+    "WHERE { "+
+    "goToMovieSpot:"+idLieux +" goToMovieSpot:OWLDataProperty_56490c48_9d55_48b0_89c4_680d73ee32ed ?latLieux. " + //latitude de l'arret
+    "goToMovieSpot:"+idLieux +" goToMovieSpot:OWLDataProperty_2cfda50e_062f_41a4_8d92_b74af8fbc93f ?longLieux " + //longitude de l'arret
+"}";
+
+
+      var latPoint = 0;
+      var longPoint = 0;
+
+      $.ajax({
+        //envoi de la requête
+        method: "GET",
+        url: "http://localhost:3030/goToMovieSpot/sparql?query="+encodeURIComponent(query)+"&format=json",
+        dataType : "json",
+        success:function(data) {
+            data.results.bindings.forEach(function(s){
+              latPoint =s.latLieux.value;
+              longPoint =s.longLieux.value;
+            });
+          }
+      });
+
+
+      const query2 = "PREFIX goToMovieSpot: <http://www.semanticweb.org/nathalie/ontologies/2017/1/untitled-ontology-161#> "+
+          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+
+          "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "+
+          "SELECT distinct * "+
+          "WHERE { "+
+          "goToMovieSpot:"+idLieux +" rdfs:label ?adr "+
+      "}";
+
+      $.ajax({
+        //envoi de la requête
+        method: "GET",
+        url: "http://localhost:3030/goToMovieSpot/sparql?query="+encodeURIComponent(query2)+"&format=json",
+        dataType : "json",
+        success:function(data) {
+          console.log(data)
+            data.results.bindings.forEach(function(s){
+                console.log(s);
+                  var marker = L.marker([latPoint,longPoint], {icon: filmIcon}).addTo(markerGroup);
+                  marker.bindPopup("<b>"+selectedFilm+"</b><br>"+s.adr.value);
+            });
+          }
+      });
+
 }
